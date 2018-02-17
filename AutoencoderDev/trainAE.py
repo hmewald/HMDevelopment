@@ -68,20 +68,20 @@ def newConvAE():
     # Autoencoder model definition
     input_img = Input(shape=(input_y,input_x,input_chan))
 
-    x = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(input_img)
+    x = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(input_img)
     x = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    encoded = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    encoded = Conv2D(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
 
-    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(encoded)
-    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(encoded)
     x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
     decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(x)
 
     autoencoder = Model(input_img, decoded)
-    adam = Adam(lr=0.01,clipnorm=5.0)
+    adam = Adam(lr=0.001,clipnorm=5.0)
     autoencoder.compile(optimizer=adam, loss='mean_absolute_error')
 
     print(autoencoder.summary())
