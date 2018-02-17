@@ -17,7 +17,7 @@ input_x = 243
 input_y = 243
 input_chan = 1
 
-epoch_int = 20
+epoch_int = 50
 batch_int = 32
 n_val = 80
 
