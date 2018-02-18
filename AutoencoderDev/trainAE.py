@@ -18,8 +18,8 @@ input_y = 243
 input_chan = 1
 
 epoch_int = 50
-batch_int = 32
-n_val = 80
+batch_int = 64
+n_val = 64
 
 
 def convAE():
