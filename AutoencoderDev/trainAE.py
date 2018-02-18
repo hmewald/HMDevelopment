@@ -1,4 +1,4 @@
-from keras.layers import Input, Dense, Conv2D, Conv2DTranspose, MaxPooling2D, UpSampling2D
+from keras.layers import Input, Dense, Conv2D, Conv2DTranspose, MaxPooling2D, UpSampling2D, Add
 from keras.models import Model
 from keras.optimizers import SGD , Adam, Adadelta
 
@@ -68,21 +68,23 @@ def newConvAE():
     # Autoencoder model definition
     input_img = Input(shape=(input_y,input_x,input_chan))
 
-    x = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(input_img)
-    x = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2D(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2D(8*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    skip1 = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(input_img)
+    x = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(skip1)
+    skip2 = Conv2D(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2D(8*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(skip2)
     encoded = Conv2D(16*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
 
     x = Conv2DTranspose(8*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(encoded)
     x = Conv2DTranspose(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    add2 = Add([x, skip2])
+    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(add2)
     x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(x)
+    add1 = Add([x, skip1])
+    decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(add1)
 
     autoencoder = Model(input_img, decoded)
     adam = Adam(lr=0.001,clipnorm=5.0)
-    autoencoder.compile(optimizer=adam, loss='mean_absolute_error')
+    autoencoder.compile(optimizer=adam, loss='mse')
 
     print(autoencoder.summary())
     return autoencoder, None, None
