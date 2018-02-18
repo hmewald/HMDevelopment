@@ -79,8 +79,8 @@ def newConvAE():
     add2 = Add()([x, skip2])
     x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(add2)
     x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    add1 = Add()([x, skip1])
-    decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(add1)
+    # add1 = Add()([x, skip1])
+    decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(x)
 
     autoencoder = Model(input_img, decoded)
     adam = Adam(lr=0.001,clipnorm=5.0)
