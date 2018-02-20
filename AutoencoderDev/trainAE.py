@@ -19,7 +19,7 @@ input_chan = 1
 
 mark_size = 100
 
-epoch_int = 50
+epoch_int = 10
 batch_int = 64
 n_val = 64
 
