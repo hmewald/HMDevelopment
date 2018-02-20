@@ -12,12 +12,14 @@ import math
 import sys
 
 
-encoding_dim = 64
+encoding_dim = 128
 input_x = 243
 input_y = 243
 input_chan = 1
 
-epoch_int = 50
+mark_size = 100
+
+epoch_int = 20
 batch_int = 64
 n_val = 64
 
@@ -76,8 +78,37 @@ def newConvAE():
 
     x = Conv2DTranspose(8*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(encoded)
     x = Conv2DTranspose(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
-    add2 = Add()([x, skip2])
-    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(add2)
+    # add2 = Add()([x, skip2])
+    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
+    # add1 = Add()([x, skip1])
+    decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(x)
+
+    autoencoder = Model(input_img, decoded)
+    adam = Adam(lr=0.001,clipnorm=5.0)
+    autoencoder.compile(optimizer=adam, loss='mse')
+
+    print(autoencoder.summary())
+    return autoencoder, None, None
+
+
+def splitConvAE():
+    # Autoencoder model definition
+    input_img = Input(shape=(input_y,input_x,input_chan))
+
+    conv1 = Conv2D(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(input_img)
+    encoded1 = Conv2D(16*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(conv1)
+
+    conv2 = Conv2D(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(conv1)
+    encoded2 = Conv2D(16*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(conv2)
+
+    conv3 = Conv2D(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(conv2)
+    encoded3 = Conv2D(16*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(conv3)
+
+    deconv3 = Conv2DTranspose(4*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(encoded3)
+    deconv2 = Conv2DTranspose(4*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(deconv3)
+    # add2 = Add()([x, skip2])
+    x = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
     x = Conv2DTranspose(encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(x)
     # add1 = Add()([x, skip1])
     decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(x)
@@ -103,7 +134,6 @@ def importDatasetX(im_path, n_max):
         train_progress = 0
         for i in range(0,n_set):
             im_big = misc.imread(join(im_path,im_files[i]),mode='RGB')
-            im_big = misc.imread(join(im_path,im_files[i]),mode='L')
             im_res = misc.imresize(im_big,(input_y, input_x))
             del im_big
 
@@ -142,6 +172,18 @@ def write_list(out_list, out_path):
 
     for point in out_list:
         f_out.write(str(point) + "\n")
+
+
+def markImset(im_set):
+    mark_big = misc.imread("mark_raw.jpeg" ,mode='L')
+    mark_res = misc.imresize(mark_big, (mark_size, mark_size))
+
+    n_set = im_set.shape[2]
+    for i in range(mark_size):
+        for j in range(mark_size):
+            if (mark_size == 1):
+                im_set[:,i,j] = np.ones((n_set,1,1))
+
 
 
 
