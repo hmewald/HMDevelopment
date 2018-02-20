@@ -193,7 +193,7 @@ im_path = sys.argv[3]
 im_test_path = sys.argv[4]
 num_set = int(sys.argv[5])
 
-model, model_enc, model_dec = newConvAE()
+model, model_enc, model_dec = splitConvAE()
 
 
 print("Reading training dataset:")
@@ -206,7 +206,6 @@ print(X_test.shape)
 
 X_train = X_train.astype('float32') / 255.
 X_test = X_test.astype('float32') / 255.
-X_test = markImset(X_test)
 # X_train = X_train.reshape((len(X_train), np.prod(X_train.shape[1:])))
 # X_test = X_test.reshape((len(X_test), np.prod(X_test.shape[1:])))
 #
@@ -218,6 +217,8 @@ model.save(model_path + class_name + "_ae_model.h5")
 
 # encoded_ims = model_enc.predict(X_test)
 # decoded_ims = model_dec.predict(encoded_ims)
+X_test = markImset(X_test)
+
 decoded_training_ims = model.predict(X_train[:n_val])
 decoded_ims = model.predict(X_test)
 
