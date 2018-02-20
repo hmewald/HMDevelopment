@@ -182,7 +182,7 @@ def markImset(im_set):
     for i in range(mark_size):
         for j in range(mark_size):
             if (mark_res[i,j] > 0.9):
-                im_set[:,i,j] = np.ones((n_set,1,1))
+                im_set[:,i,j] = np.ones((n_set,1))
 
     return im_set
 
