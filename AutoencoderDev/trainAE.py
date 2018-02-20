@@ -178,7 +178,7 @@ def markImset(im_set):
     mark_big = misc.imread("mark_raw.jpeg" ,mode='L')
     mark_res = misc.imresize(mark_big, (mark_size, mark_size))
 
-    n_set = im_set.shape[2]
+    n_set = im_set.shape[0]
     for i in range(mark_size):
         for j in range(mark_size):
             if (mark_res[i,j] > 0.9):
