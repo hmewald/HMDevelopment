@@ -112,10 +112,10 @@ def splitConvAE():
     add2 = Add()([deconv3, decoded2])
     deconv2 = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(add2)
 
-    decoded1 = Conv2DTranspose(4*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(encoded1)
+    decoded1 = Conv2DTranspose(2*encoding_dim, (15,15), activation='relu', strides=(9,9), padding ='same')(encoded1)
     add1 = Add()([deconv2, decoded1])
     deconv1 = Conv2DTranspose(2*encoding_dim, (3,3), activation='relu', strides=(3,3), padding ='same')(add1)
-    
+
     decoded = Conv2DTranspose(1, (3,3), activation='sigmoid', strides=(3,3), padding ='same')(deconv1)
 
     autoencoder = Model(input_img, decoded)
