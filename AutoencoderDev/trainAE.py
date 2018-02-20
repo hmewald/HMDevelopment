@@ -184,7 +184,7 @@ def markImset(im_set):
             if (mark_size == 1):
                 im_set[:,i,j] = np.ones((n_set,1,1))
 
-
+    return im_set
 
 
 class_name = sys.argv[1]
@@ -206,6 +206,7 @@ print(X_test.shape)
 
 X_train = X_train.astype('float32') / 255.
 X_test = X_test.astype('float32') / 255.
+X_test = markImset(X_test)
 # X_train = X_train.reshape((len(X_train), np.prod(X_train.shape[1:])))
 # X_test = X_test.reshape((len(X_test), np.prod(X_test.shape[1:])))
 #
