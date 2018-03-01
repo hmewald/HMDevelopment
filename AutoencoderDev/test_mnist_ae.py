@@ -5,8 +5,8 @@ import numpy as np
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelCF/mnist_ae_model.h5")
-parser.add_argument('-o', '--outpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelCF/")
+parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelMNIST/mnist_ae_model.h5")
+parser.add_argument('-o', '--outpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelMNIST/")
 args = parser.parse_args()
 
 input_x = 243
