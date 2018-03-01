@@ -19,10 +19,12 @@ from keras.datasets import mnist
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--classname', help='code for class being fitted', type=str, default="mnist")
 parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelCF/")
-results = parser.parse_args()
+parser.add_argument('-e', '--epochnum', help='number of training info', type=int, default=10)
+args = parser.parse_args()
 
-class_name = results.classname
-model_path = results.modelpath
+class_name = args.classname
+model_path = args.modelpath
+epoch_int = args.epochnum
 
 try:
     shutil.rmtree(model_path)
@@ -40,7 +42,6 @@ input_chan = 1
 
 mark_size = 100
 
-epoch_int = 10
 batch_int = 64
 n_train = 8192
 n_val = 64
