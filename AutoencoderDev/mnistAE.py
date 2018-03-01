@@ -89,8 +89,8 @@ n_test = X_test.shape[0]
 X_train = X_train.reshape([n_train, 28, 28, 1])
 X_test = X_test.reshape([n_test, 28, 28, 1])
 
-X_train_big = zeros((n_train, input_x, input_y, 1))
-X_test_big = zeros((n_test, input_x, input_y, 1))
+X_train_big = np.zeros((n_train, input_x, input_y, 1))
+X_test_big = np.zeros((n_test, input_x, input_y, 1))
 
 for i in range(n_train):
     X_train_big[i,:,:] = misc.imresize(X_train[i,:,:],(input_y, input_x))
