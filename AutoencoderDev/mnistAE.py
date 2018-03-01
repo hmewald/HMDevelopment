@@ -144,4 +144,4 @@ for i in range(n_show):
 write_list(loss_list, model_path + "losses.txt")
 
 decoded_mark = model.predict(mark_im)
-misc.imsave(model_path + "ae_mark.png", np.concatenate([mark_im, decoded_mark, mark_im - decoded_mark], axis=0))
+misc.imsave(model_path + "ae_mark.png", np.concatenate([mark_im.reshape([input_x,input_y]), decoded_mark.reshape([input_x,input_y]), mark_im.reshape([input_x,input_y]) - decoded_mark.reshape([input_x,input_y])], axis=0))
