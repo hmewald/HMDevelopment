@@ -8,25 +8,20 @@ from ae_models import *
 import math
 import sys
 import argparse
-import shutil, os
+
+# Load MNIST dataset from Keras
+from keras.datasets import mnist
 
 
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--classname', help='code for class being fitted', type=str, default="cf")
+parser.add_argument('-c', '--classname', help='code for class being fitted', type=str, default="mnist")
 parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelCF/")
-parser.add_argument('-it', '--imtrain', help='path with training images', type=str, default="/hmewald/DatasetTraining/VideoCF")
-parser.add_argument('-iv', '--imval', help='path with test/validation images', type=str, default="/hmewald/DatasetTest/VideoCF")
-parser.add_argument('-n', '--numset', help='number of images to load', type=str, default=1024)
 results = parser.parse_args()
 
 class_name = results.classname
 model_path = results.modelpath
-im_path = results.imtrain
-im_test_path = results.imval
-num_set = results.numset
-
 
 try:
     shutil.rmtree(model_path)
@@ -36,7 +31,6 @@ except OSError:
 os.mkdir(model_path)
 os.mkdir(model_path + "TrainingImages")
 os.mkdir(model_path + "TestImages")
-
 
 encoding_dim = 64
 input_x = 243
@@ -49,44 +43,6 @@ epoch_int = 10
 batch_int = 64
 n_val = 64
 
-
-
-def importDatasetX(im_path, n_max):
-    # Read images and convert to grayscale
-    im_files = [f for f in listdir(im_path) if isfile(join(im_path, f))]
-    im_files.sort()
-
-    n_set = min([len(im_files),n_max])
-
-    if(input_chan == 3):
-        X_arr = np.empty((n_set,input_y, input_x,input_chan), dtype='uint8')
-        train_progress = 0
-        for i in range(0,n_set):
-            im_big = misc.imread(join(im_path,im_files[i]),mode='RGB')
-            im_res = misc.imresize(im_big,(input_y, input_x))
-            del im_big
-
-            X_arr[i,:,:,:] = im_res
-
-            if (math.ceil(100*i/n_set) > train_progress):
-                train_progress = math.ceil(100*i/n_set)
-                print("Image set reading at " + str(train_progress) + " percent completion")
-
-    elif(input_chan == 1):
-        X_arr = np.empty((n_set,input_y, input_x, input_chan), dtype='uint8')
-        train_progress = 0
-        for i in range(0,n_set):
-            im_big = misc.imread(join(im_path,im_files[i]),mode='L')
-            im_res = misc.imresize(im_big,(input_y, input_x))
-            del im_big
-
-            X_arr[i,:,:,0] = im_res
-
-            if (math.ceil(10*i/n_set) > train_progress):
-                train_progress = math.ceil(10*i/n_set)
-                print("Image set reading at " + str(10*train_progress) + " percent completion")
-
-    return X_arr, n_set
 
 
 def computeAEloss(in_im, recon_im):
@@ -103,18 +59,13 @@ def write_list(out_list, out_path):
         f_out.write(str(point) + "\n")
 
 
-def markImset(im_set):
+def loadMark():
     mark_big = misc.imread("mark_raw.jpeg" ,mode='L')
-    mark_res = misc.imresize(mark_big, (mark_size, mark_size))
+    mark_res = misc.imresize(mark_big, (input_x, input_y))
 
-    n_set = im_set.shape[0]
-    for i in range(mark_size):
-        for j in range(mark_size):
-            if (mark_res[i,j] > 0.9):
-                im_set[:,i,j] = np.ones((n_set,1))
+    mark_im = X_train.mark_res([1, 28, 28, 1])
 
-    return im_set
-
+    return mark_im
 
 
 model, model_enc, model_dec = splitConvAE((input_y,input_x,input_chan))
@@ -125,11 +76,35 @@ X_train, n_train = importDatasetX(im_path, num_set)
 print("Reading test dataset:")
 X_test, n_test = importDatasetX(im_test_path, n_val)
 
+# pre-shuffled train and test sets
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+
+val_set_J = importDatasetX("")
+
 print(X_train.shape)
 print(X_test.shape)
 
 X_train = X_train.astype('float32') / 255.
 X_test = X_test.astype('float32') / 255.
+
+n_train = X_train.shape[0]
+n_test = X_test.shape[0]
+
+
+X_train = X_train.reshape([n_train, 28, 28, 1])
+X_test = X_test.reshape([n_test, 28, 28, 1])
+
+X_train_big = zeros((n_train, input_x, input_y, 1))
+X_test_big = zeros((n_test, input_x, input_y, 1))
+
+for i in range(n_train):
+    X_train_big[i,:,:] = misc.imresize(X_train[i,:,:],(input_y, input_x))
+
+for i in range(n_test):
+    X_test_big[i,:,:] = misc.imresize(X_test[i,:,:],(input_y, input_x))
+
+mark_im = loadMark()
+
 # X_train = X_train.reshape((len(X_train), np.prod(X_train.shape[1:])))
 # X_test = X_test.reshape((len(X_test), np.prod(X_test.shape[1:])))
 #
@@ -169,3 +144,6 @@ for i in range(n_show):
     # misc.imsave(model_path + "ae_reconstruction" + str(i) + ".png", decoded_ims[i].reshape(input_y,input_x))
 
 write_list(loss_list, model_path + "losses.txt")
+
+decoded_mark = model.predict(mark_im)
+misc.imsave(model_path + "ae_mark.png", np.concatenate([mark_im, decoded_mark, mark_im - decoded_mark], axis=0))
