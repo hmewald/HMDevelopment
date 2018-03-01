@@ -98,6 +98,9 @@ for i in range(n_train):
 for i in range(n_test):
     X_test_big[i,:,:,0] = misc.imresize(X_test[i,:,:].reshape([28,28]),(input_y, input_x))
 
+X_train = X_train_big
+X_test = X_test_big
+
 mark_im = loadMark()
 
 # X_train = X_train.reshape((len(X_train), np.prod(X_train.shape[1:])))
