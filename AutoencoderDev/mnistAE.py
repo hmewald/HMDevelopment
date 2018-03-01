@@ -91,12 +91,12 @@ X_train = X_train.reshape([n_train_set, 28, 28, 1])
 X_test = X_test.reshape([n_test_set, 28, 28, 1])
 
 X_train_big = np.zeros((n_train, input_x, input_y, 1))
-X_test_big = np.zeros((n_test, input_x, input_y, 1))
+X_test_big = np.zeros((n_val, input_x, input_y, 1))
 
 for i in range(n_train):
     X_train_big[i,:,:,0] = misc.imresize(X_train[i,:,:].reshape([28,28]),(input_y, input_x))
 
-for i in range(n_test):
+for i in range(n_val):
     X_test_big[i,:,:,0] = misc.imresize(X_test[i,:,:].reshape([28,28]),(input_y, input_x))
 
 X_train = X_train_big
