@@ -71,7 +71,7 @@ def loadMark():
     return mark_im
 
 
-model, model_enc, model_dec = splitConvAE((input_y,input_x,input_chan))
+model, model_enc, model_dec = newConvAE((input_y,input_x,input_chan))
 
 
 
