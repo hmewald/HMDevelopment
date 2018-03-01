@@ -76,8 +76,6 @@ model, model_enc, model_dec = splitConvAE((input_y,input_x,input_chan))
 # pre-shuffled train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-val_set_J = importDatasetX("")
-
 print(X_train.shape)
 print(X_test.shape)
 
