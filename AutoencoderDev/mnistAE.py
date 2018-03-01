@@ -33,7 +33,7 @@ os.mkdir(model_path)
 os.mkdir(model_path + "TrainingImages")
 os.mkdir(model_path + "TestImages")
 
-encoding_dim = 64
+
 input_x = 243
 input_y = 243
 input_chan = 1
@@ -72,10 +72,6 @@ def loadMark():
 model, model_enc, model_dec = splitConvAE((input_y,input_x,input_chan))
 
 
-print("Reading training dataset:")
-X_train, n_train = importDatasetX(im_path, num_set)
-print("Reading test dataset:")
-X_test, n_test = importDatasetX(im_test_path, n_val)
 
 # pre-shuffled train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
