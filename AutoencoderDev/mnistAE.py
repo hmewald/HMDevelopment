@@ -64,7 +64,7 @@ def loadMark():
     mark_big = misc.imread("mark_raw.jpeg" ,mode='L')
     mark_res = misc.imresize(mark_big, (input_x, input_y))
 
-    mark_im = mark_res.reshape([1, 28, 28, 1])
+    mark_im = mark_res.reshape([1, input_x, input_y, 1])
 
     return mark_im
 
