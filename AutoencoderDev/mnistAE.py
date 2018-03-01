@@ -18,7 +18,7 @@ from keras.datasets import mnist
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--classname', help='code for class being fitted', type=str, default="mnist")
-parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelCF/")
+parser.add_argument('-m', '--modelpath', help='path for saving autoencoder model', type=str, default="/hmewald/Autoencoders/ModelMNIST/")
 parser.add_argument('-e', '--epochnum', help='number of training info', type=int, default=10)
 args = parser.parse_args()
 
