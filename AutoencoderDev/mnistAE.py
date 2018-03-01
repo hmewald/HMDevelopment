@@ -114,7 +114,6 @@ model.save(model_path + class_name + "_ae_model.h5")
 
 # encoded_ims = model_enc.predict(X_test)
 # decoded_ims = model_dec.predict(encoded_ims)
-X_test = markImset(X_test)
 
 decoded_training_ims = model.predict(X_train[:n_val])
 decoded_ims = model.predict(X_test)
