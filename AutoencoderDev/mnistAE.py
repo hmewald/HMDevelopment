@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import misc
+import shutil, os
 from os import listdir
 from os.path import isfile, join
 from ae_models import *
