@@ -2,7 +2,7 @@ from keras.layers import Input, Dense, Conv2D, Conv2DTranspose, MaxPooling2D, Up
 from keras.models import Model
 from keras.optimizers import SGD , Adam, Adadelta
 
-
+encoding_dim = 64
 
 def convAE(input_dims):
     # Autoencoder model definition
