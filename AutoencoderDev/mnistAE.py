@@ -84,9 +84,8 @@ print(X_test.shape)
 X_train = X_train.astype('float32') / 255.
 X_test = X_test.astype('float32') / 255.
 
-n_train = X_train.shape[0]
-n_test = X_test.shape[0]
-
+# n_train = X_train.shape[0]
+# n_test = X_test.shape[0]
 
 X_train = X_train.reshape([n_train, 28, 28, 1])
 X_test = X_test.reshape([n_test, 28, 28, 1])
