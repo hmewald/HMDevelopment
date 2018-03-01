@@ -42,6 +42,7 @@ mark_size = 100
 
 epoch_int = 10
 batch_int = 64
+n_train = 8192
 n_val = 64
 
 
@@ -109,7 +110,7 @@ mark_im = loadMark()
 # print(X_train.shape)
 # print(X_test.shape)
 
-model.fit(X_train, X_train, epochs=epoch_int, batch_size=batch_int, shuffle=True, validation_data=(X_test,X_test))
+model.fit(X_train[:n_train], X_train[:n_train], epochs=epoch_int, batch_size=batch_int, shuffle=True, validation_data=(X_test,X_test))
 model.save(model_path + class_name + "_ae_model.h5")
 
 # encoded_ims = model_enc.predict(X_test)
