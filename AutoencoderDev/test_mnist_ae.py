@@ -1,6 +1,7 @@
 import argparse
 from scipy import misc
 from keras.models import load_model
+import numpy as np
 
 
 parser = argparse.ArgumentParser()
